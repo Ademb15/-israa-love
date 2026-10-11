@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>إسراء ♥</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#1a0b2e; --bg2:#3d1450; --bg3:#7a1f5c;
+    --rose:#ff4d8d; --pink:#ff9ec4; --gold:#ffd98a; --white:#fff5fa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{overflow-x:hidden}
+  body{min-height:100%}
+  body{
+    font-family:'Amiri',serif;
+    color:var(--white);
+    background:#000;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  #hearts-layer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .float-heart{
+    position:absolute;bottom:-40px;
+    animation:rise linear forwards, sway ease-in-out infinite alternate;
+    will-change:transform,translate;
+  }
+  @keyframes sway{
+    from{translate:-24px 0}
+    to{translate:24px 0}
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0) rotate(0) scale(.6);opacity:0}
+    10%{opacity:1}
+    100%{transform:translateY(-110vh) translateX(var(--dx)) rotate(var(--rot)) scale(1.1);opacity:0}
+  }
+  main{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:28px 16px 80px;text-align:center}
+
+  .hero{position:relative;height:min(78vw,380px);margin-top:4px}
+  #heartCanvas{width:100%;height:100%;display:block}
+  .name-wrap{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;pointer-events:none;
+  }
+  .name{
+    font-family:'Reem Kufi',sans-serif;font-weight:700;
+    font-size:clamp(48px,15vw,92px);line-height:1.1;
+    background:linear-gradient(90deg,#fff,var(--pink),var(--gold),var(--pink),#fff);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shine 5s linear infinite, beat 1.6s ease-in-out infinite;
+    text-shadow:0 0 30px rgba(255,77,141,.35);
+  }
+  @keyframes shine{to{background-position:-300% 0}}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}}
+  .sub{font-size:clamp(16px,4.5vw,22px);color:var(--pink);margin-top:2px;letter-spacing:.5px}
+
+  .typed{
+    min-height:70px;margin:18px auto 8px;font-size:clamp(19px,5vw,26px);
+    color:var(--gold);max-width:560px;line-height:1.9;
+  }
+  .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);margin-inline-start:4px;vertical-align:middle;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .btn{
+    font-family:'Reem Kufi',sans-serif;font-size:19px;color:#fff;border:none;cursor:pointer;
+    padding:14px 34px;border-radius:50px;margin-top:14px;
+    background:linear-gradient(135deg,var(--rose),#c2185b);
+    box-shadow:0 8px 28px rgba(255,77,141,.45), inset 0 1px 0 rgba(255,255,255,.35);
+    transition:transform .2s, box-shadow .2s;position:relative;overflow:hidden;
+  }
+  .btn:active{transform:scale(.95)}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(255,77,141,.6)}
+  .btn::after{
+    content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);
+    animation:sweep 3s infinite;
+  }
+  @keyframes sweep{to{left:160%}}
+
+  h2{
+    font-family:'Reem Kufi',sans-serif;font-weight:500;font-size:clamp(24px,6vw,32px);
+    margin:54px 0 20px;color:var(--white);
+  }
+  h2 span{color:var(--rose)}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .card{perspective:900px;height:150px;cursor:pointer}
+  .card-inner{
+    position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .card.flipped .card-inner{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:12px;border:1px solid rgba(255,158,196,.35);
+  }
+  .front{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,77,141,.15))}
+  .front .emoji{font-size:38px;margin-bottom:6px;animation:bob 2.4s ease-in-out infinite}
+  .front .t{font-family:'Reem Kufi',sans-serif;font-size:19px}
+  .back{
+    transform:rotateY(180deg);
+    background:linear-gradient(145deg,rgba(255,77,141,.5),rgba(122,31,92,.7));
+    font-size:17px;line-height:1.7;
+  }
+  @keyframes bob{50%{transform:translateY(-6px) rotate(6deg)}}
+
+  /* letter */
+  .letter-area{margin-top:54px}
+  .envelope{
+    position:relative;width:min(300px,80vw);height:200px;margin:0 auto;cursor:pointer;
+    transition:transform .3s;
+  }
+  .envelope:hover{transform:scale(1.03)}
+  .env-back{position:absolute;inset:0;background:#d63b7a;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.4)}
+  .paper{
+    position:absolute;left:8%;right:8%;top:10px;bottom:10px;background:#fff9ee;border-radius:6px;
+    transition:transform .9s ease .2s;z-index:1;
+  }
+  .env-front{
+    position:absolute;inset:0;z-index:2;border-radius:10px;
+    background:
+      linear-gradient(to top right,#e8528b 49.5%,transparent 50%) left/50% 100% no-repeat,
+      linear-gradient(to top left,#ef6a9b 49.5%,transparent 50%) right/50% 100% no-repeat;
+  }
+  .flap{
+    position:absolute;left:0;right:0;top:0;height:60%;z-index:3;transform-origin:top;
+    background:#c42d6c;clip-path:polygon(0 0,100% 0,50% 100%);
+    transition:transform .6s ease, z-index 0s .3s;
+  }
+  .seal{
+    position:absolute;z-index:4;left:50%;top:48%;transform:translate(-50%,-50%);
+    font-size:34px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));transition:opacity .3s;
+    animation:beat 1.6s infinite;
+  }
+  .envelope.open .flap{transform:rotateX(180deg);z-index:0}
+  .envelope.open .seal{opacity:0}
+  .envelope.open .paper{transform:translateY(-120px)}
+  .hint{margin-top:16px;color:var(--pink);font-size:17px}
+
+  .letter{
+    max-width:600px;margin:30px auto 0;padding:30px 24px;border-radius:22px;
+    background:linear-gradient(160deg,#fff9ee,#ffe8f1);color:#4a1236;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+    font-size:clamp(19px,4.8vw,23px);line-height:2.1;
+    max-height:0;opacity:0;overflow:hidden;padding-top:0;padding-bottom:0;
+    transition:max-height 1.2s ease, opacity .8s ease, padding .6s ease;
+  }
+  .letter.show{max-height:900px;opacity:1;padding:30px 24px}
+  .letter b{color:#c2185b;font-family:'Reem Kufi',sans-serif}
+  .sign{margin-top:14px;font-weight:700;color:#c2185b}
+
+  footer{margin-top:60px;color:var(--pink);font-size:18px;opacity:.9}
+  .pop{
+    position:fixed;z-index:50;pointer-events:none;font-size:22px;
+    animation:pop 1s ease-out forwards;
+  }
+  @keyframes pop{
+    0%{transform:translate(0,0) scale(.4);opacity:1}
+    100%{transform:translate(var(--x),var(--y)) scale(1.3);opacity:0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;animation-iteration-count:1!important}
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div id="hearts-layer"></div>
+
+<main>
+  <section class="hero">
+    <canvas id="heartCanvas"></canvas>
+    <div class="name-wrap">
+      <div class="name">إسراء</div>
+      <div class="sub">يا نبض القلب ✨</div>
+    </div>
+  </section>
+
+  <div class="typed"><span id="typed"></span><span class="cursor"></span></div>
+  <button class="btn" id="burstBtn">💖 اضغطي هنا</button>
+
+  <h2>أسباب <span>أحبّك</span> يا إسراء</h2>
+  <div class="cards" id="cards"></div>
+
+  <div class="letter-area">
+    <h2 style="margin-top:0">رسالة صغيرة لكِ <span>💌</span></h2>
+    <div class="envelope" id="envelope">
+      <div class="env-back"></div>
+      <div class="paper"></div>
+      <div class="env-front"></div>
+      <div class="flap"></div>
+      <div class="seal">❤️</div>
+    </div>
+    <p class="hint" id="hint">اضغطي على الرسالة لتفتحيها</p>
+
+    <div class="letter" id="letter">
+      <p><b>إسراء</b>،</p>
+      <p>يا ضحكةً تُنير أيامي، ويا هدوءاً أسكن إليه كلما تعبت الدنيا. وجودك في حياتي نعمة لا أستطيع أن أشكر الله عليها بما يكفي.</p>
+      <p>كل يوم معكِ حكاية جديدة، وكل ابتسامة منكِ وطنٌ صغير أعود إليه.</p>
+      <p>أحبّكِ اليوم، وغداً، وكل الأيام. 💗</p>
+      <p class="sign">— من كل قلبي</p>
+    </div>
+  </div>
+
+  <footer>صُنع بحبّ لإسراء ❤️</footer>
+</main>
+
+<script>
+/* ---------- Starry background ---------- */
+(function(){
+  const c = document.getElementById('stars'), ctx = c.getContext('2d');
+  let w, h, stars = [], shooting = [];
+  function resize(){
+    w = c.width = innerWidth; h = c.height = innerHeight;
+    stars = Array.from({length: Math.min(110, Math.floor(w*h/9000))}, () => {
+      const sp = Math.random()*.5 + .1;
+      const ang = Math.random()*Math.PI*2;
+      return {
+        x: Math.random()*w, y: Math.random()*h,
+        r: Math.random()*1.5+.3, p: Math.random()*Math.PI*2, s: Math.random()*.03+.01,
+        vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp - .15
+      };
+    });
+  }
+  addEventListener('resize', resize); resize();
+  setInterval(() => {
+    shooting.push({
+      x: Math.random()*w, y: Math.random()*h*.5,
+      vx: -(6 + Math.random()*5), vy: 3 + Math.random()*3, life: 1
+    });
+  }, 1800);
+  (function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = '#fff';
+    for(const s of stars){
+      s.p += s.s;
+      s.x += s.vx; s.y += s.vy;
+      if(s.x < -5) s.x = w+5; if(s.x > w+5) s.x = -5;
+      if(s.y < -5) s.y = h+5; if(s.y > h+5) s.y = -5;
+      ctx.globalAlpha = .3 + .7*Math.abs(Math.sin(s.p));
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+    }
+    for(let i = shooting.length-1; i >= 0; i--){
+      const m = shooting[i];
+      m.x += m.vx; m.y += m.vy; m.life -= .018;
+      if(m.life <= 0){ shooting.splice(i,1); continue; }
+      const g = ctx.createLinearGradient(m.x, m.y, m.x - m.vx*7, m.y - m.vy*7);
+      g.addColorStop(0, `rgba(255,217,138,${m.life})`);
+      g.addColorStop(1, 'rgba(255,217,138,0)');
+      ctx.globalAlpha = 1; ctx.strokeStyle = g; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - m.vx*7, m.y - m.vy*7); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ---------- Particle heart ---------- */
+(function(){
+  const c = document.getElementById('heartCanvas'), ctx = c.getContext('2d');
+  let w, h, parts = [], t = 0, dpr = Math.min(devicePixelRatio||1, 1.5);
+  const N = 240;
+  function heartPoint(a){
+    return {
+      x: 16*Math.pow(Math.sin(a),3),
+      y: -(13*Math.cos(a) - 5*Math.cos(2*a) - 2*Math.cos(3*a) - Math.cos(4*a))
+    };
+  }
+  function resize(){
+    const r = c.getBoundingClientRect();
+    w = r.width; h = r.height;
+    c.width = w*dpr; c.height = h*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const scale = Math.min(w,h)/38;
+    parts = [];
+    for(let i=0;i<N;i++){
+      const a = (i/N)*Math.PI*2;
+      const p = heartPoint(a);
+      const k = Math.random()<.35 ? Math.random()*.9 : 1; // some fill inside
+      parts.push({
+        tx: p.x*k, ty: p.y*k, scale,
+        x: Math.random()*w, y: Math.random()*h,
+        ph: Math.random()*Math.PI*2,
+        size: Math.random()*2.2+1,
+        hue: 320 + Math.random()*30
+      });
+    }
+  }
+  addEventListener('resize', resize); resize();
+  (function draw(){
+    t += .03;
+    ctx.clearRect(0,0,w,h);
+    const beat = 1 + .06*Math.pow(Math.max(0,Math.sin(t*2.2)),6)*2 + .02*Math.sin(t*2.2);
+    ctx.globalCompositeOperation = 'lighter';
+    for(const p of parts){
+      const gx = w/2 + p.tx*p.scale*beat + Math.sin(t+p.ph)*1.5;
+      const gy = h/2 - 4 + p.ty*p.scale*beat + Math.cos(t+p.ph)*1.5;
+      p.x += (gx-p.x)*.06; p.y += (gy-p.y)*.06;
+      ctx.fillStyle = `hsla(${p.hue},100%,60%,.16)`;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = `hsla(${p.hue},100%,72%,.9)`;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ---------- Floating hearts ---------- */
+const layer = document.getElementById('hearts-layer');
+const emojis = ['❤️','💖','💗','💕','💘','🌸','✨'];
+function floatHeart(delay){
+  if(layer.childElementCount > 22) return;
+  const el = document.createElement('div');
+  el.className = 'float-heart';
+  el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left = Math.random()*100 + 'vw';
+  el.style.fontSize = (14 + Math.random()*24) + 'px';
+  el.style.setProperty('--dx', (Math.random()*120-60) + 'px');
+  el.style.setProperty('--rot', (Math.random()*80-40) + 'deg');
+  const dur = 5 + Math.random()*5;
+  el.style.animationDuration = dur + 's, ' + (2 + Math.random()*2) + 's';
+  if(delay) el.style.animationDelay = (-delay) + 's, 0s';
+  layer.appendChild(el);
+  setTimeout(()=>el.remove(), dur*1000 + 500);
+}
+// قلوب موجودة من البداية + تدفق مستمر
+for(let i=0;i<10;i++) floatHeart(Math.random()*5);
+setInterval(() => floatHeart(), 550);
+
+/* ---------- Click burst ---------- */
+function burst(x, y, n = 12){
+  for(let i=0;i<n;i++){
+    const el = document.createElement('div');
+    el.className = 'pop';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    const ang = Math.random()*Math.PI*2, d = 50 + Math.random()*110;
+    el.style.setProperty('--x', Math.cos(ang)*d + 'px');
+    el.style.setProperty('--y', Math.sin(ang)*d + 'px');
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 1000);
+  }
+}
+addEventListener('pointerdown', e => burst(e.clientX, e.clientY, 6));
+document.getElementById('burstBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  const r = e.currentTarget.getBoundingClientRect();
+  burst(r.left + r.width/2, r.top + r.height/2, 28);
+  for(let i=0;i<14;i++) setTimeout(floatHeart, i*70);
+});
+
+/* ---------- Typewriter ---------- */
+(function(){
+  const lines = [
+    'إسراء… اسمٌ يُشبه الليل المضيء 🌙',
+    'معكِ كل شيء أجمل وأهدأ وأصدق',
+    'ابتسامتكِ أحلى خبر في يومي ☀️',
+    'أحبّكِ بعدد نجوم السماء ✨'
+  ];
+  const el = document.getElementById('typed');
+  let i = 0, j = 0, del = false;
+  (function tick(){
+    const s = lines[i];
+    el.textContent = s.slice(0, j);
+    if(!del && j < s.length){ j++; setTimeout(tick, 70); }
+    else if(!del){ del = true; setTimeout(tick, 1700); }
+    else if(j > 0){ j--; setTimeout(tick, 28); }
+    else { del = false; i = (i+1)%lines.length; setTimeout(tick, 400); }
+  })();
+})();
+
+/* ---------- Reason cards ---------- */
+(function(){
+  const data = [
+    ['😊','ابتسامتكِ','تُضيء أحلك الأيام'],
+    ['💎','قلبكِ الطيب','أنقى من كل شيء'],
+    ['🎶','ضحكتكِ','موسيقى لا أملّ منها'],
+    ['🌷','طيبتكِ','تُزهر حيثما حللتِ'],
+    ['🌟','روحكِ المرحة','تجعل الدنيا أخفّ'],
+    ['🏡','وجودكِ','هو الأمان والبيت']
+  ];
+  const box = document.getElementById('cards');
+  data.forEach(([e,t,b]) => {
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.innerHTML = `<div class="card-inner">
+      <div class="face front"><div class="emoji">${e}</div><div class="t">${t}</div></div>
+      <div class="face back">${b} 💞</div></div>`;
+    d.addEventListener('click', () => d.classList.toggle('flipped'));
+    box.appendChild(d);
+  });
+})();
+
+/* ---------- Envelope ---------- */
+(function(){
+  const env = document.getElementById('envelope');
+  const letter = document.getElementById('letter');
+  const hint = document.getElementById('hint');
+  env.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = env.classList.toggle('open');
+    letter.classList.toggle('show', open);
+    hint.textContent = open ? 'وصلتكِ رسالتي 💗' : 'اضغطي على الرسالة لتفتحيها';
+    if(open){
+      const r = env.getBoundingClientRect();
+      burst(r.left + r.width/2, r.top + 40, 24);
+      setTimeout(()=>letter.scrollIntoView({behavior:'smooth', block:'center'}), 500);
+    }
+  });
+})();
+</script>
+</body>
+</html>
